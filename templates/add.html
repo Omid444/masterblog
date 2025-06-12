@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Adding New Book</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f6f8;
+      margin: 0;
+      padding: 40px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .form-container {
+      background-color: white;
+      padding: 30px 40px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 500px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    label {
+      margin-top: 15px;
+      margin-bottom: 5px;
+      font-weight: bold;
+      color: #555;
+    }
+
+    input[type="text"] {
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    input[type="submit"] {
+      margin-top: 20px;
+      padding: 12px;
+      background-color: #4CAF50;
+      color: white;
+      font-size: 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    input[type="submit"]:hover {
+      background-color: #45a049;
+    }
+
+    p {
+      text-align: center;
+      margin-top: 15px;
+      color: #777;
+    }
+  </style>
+</head>
+<body>
+
+<div class="form-container">
+  <h1>Add a New Book</h1>
+
+  <form action="/add" method="post" target="_blank">
+    <label for="title">Title:</label>
+    <input type="text" id="title" name="title" required>
+
+    <label for="author">Author:</label>
+    <input type="text" id="author" name="author" required>
+
+    <label for="content">Content:</label>
+    <input type="text" id="content" name="content" required>
+
+    <input type="submit" value="Submit">
+  </form>
+
+  <p>Click on the submit button to add new book.</p>
+  <p><a href="{{ url_for('index') }}" class="back-link">Go back to Home page</a></p>
+</div>
+
+</body>
+</html>
