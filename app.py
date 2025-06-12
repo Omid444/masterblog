@@ -17,6 +17,7 @@ def index():
 
 @app.route('/add', methods=['GET', 'POST'])
 def add():
+    """Add new book if request is post and return index.html, otherwise it goes to add.html """
     if request.method == 'POST':
         # Add the code that handles adding a new blog
         title = request.form.get('title','')
@@ -30,6 +31,7 @@ def add():
 
 @app.route('/delete/<int:post_id>', methods=['POST'])
 def delete(post_id):
+    """Delete post by post id and return index.html"""
     for post in blog_posts:
         if post['id'] == post_id:
             blog_posts.pop(blog_posts.index(post))
@@ -37,14 +39,15 @@ def delete(post_id):
 
 
 def fetch_post_by_id(post_id):
+    """Get post by its id"""
     for post in blog_posts:
         if post['id'] == post_id:
             return post
 
 
-
 @app.route('/update/<int:post_id>', methods=['GET', 'POST'])
 def update(post_id):
+    """Update post if request is post and return index.html otherwise it goes tp update.html page"""
     # Fetch the blog posts from the JSON file
     post = fetch_post_by_id(post_id)
     if post is None:
