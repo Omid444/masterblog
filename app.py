@@ -28,6 +28,39 @@ def add():
     return render_template('add.html')
 
 
+@app.route('/delete/<int:post_id>', methods=['POST'])
+def delete(post_id):
+    for post in blog_posts:
+        if post['id'] == post_id:
+            blog_posts.pop(blog_posts.index(post))
+            return redirect(url_for('index'))
+
+
+def fetch_post_by_id(post_id):
+    for post in blog_posts:
+        if post['id'] == post_id:
+            return post
+
+
+
+@app.route('/update/<int:post_id>', methods=['GET', 'POST'])
+def update(post_id):
+    # Fetch the blog posts from the JSON file
+    post = fetch_post_by_id(post_id)
+    if post is None:
+        # Post not found
+        return "Post not found", 404
+
+    if request.method == 'POST':
+        title = request.form.get('title','')
+        author = request.form.get('author','')
+        content = request.form.get('content','')
+        post['title'] = title
+        post['author'] = author
+        post['content'] = content
+        return redirect(url_for('index'))
+    return render_template('update.html', post=post)
+
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5000, debug=True)
