@@ -35,9 +35,9 @@ def add():
     """Add new book if request is post and return index.html, otherwise it goes to add.html """
     if request.method == 'POST':
         # Add the code that handles adding a new blog
-        title = request.form.get('title','')
-        author = request.form.get('author','')
-        content = request.form.get('content','')
+        title = request.values.get('title','')
+        author = request.values.get('author','')
+        content = request.values.get('content','')
         if all([title, author, content]):
             blog_posts.append({'id': (max(post['id'] for post in blog_posts) + 1), 'author': author, 'title': title, 'content': content})
             save_post(blog_posts)
@@ -80,9 +80,9 @@ def update(post_id):
         return "Post not found", 404
 
     if request.method == 'POST':
-        title = request.form.get('title','')
-        author = request.form.get('author','')
-        content = request.form.get('content','')
+        title = request.values.get('title','')
+        author = request.values.get('author','')
+        content = request.values.get('content','')
         print(title, content, author)
         print(all([title, author, content]))
         if all([title, author, content]):
