@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, abort
 import json
 import os
 app = Flask(__name__)
@@ -83,8 +83,6 @@ def update(post_id):
         title = request.values.get('title','')
         author = request.values.get('author','')
         content = request.values.get('content','')
-        print(title, content, author)
-        print(all([title, author, content]))
         if all([title, author, content]):
             post['title'] = title
             post['author'] = author
@@ -92,7 +90,7 @@ def update(post_id):
             save_post(blog_posts)
             return redirect(url_for('index'))
         else:
-            return "all field must be filled"
+            abort(400, description="Missing required parameters: title, author, and content are required.")
 
     return render_template('update.html', post=post)
 
