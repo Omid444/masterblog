@@ -1,12 +1,25 @@
 from flask import Flask, render_template, request, redirect, url_for
-
+import json
+import os
 app = Flask(__name__)
 
-blog_posts = [
-    {'id': 1, 'author': 'John Doe', 'title': 'First Post', 'content': 'This is my first post.'},
-    {'id': 2, 'author': 'Jane Doe', 'title': 'Second Post', 'content': 'This is another post.'},
-    # More blog posts can go here...
-]
+
+def load_post():
+    if os.path.exists('data/blog_posts.json'):
+        with open('data/blog_posts.json', 'r') as file:
+            content = file.read().strip()
+            if content:
+                return json.loads(content)
+    return []
+
+
+def save_post(posts):
+    json_post = json.dumps(posts, indent=4)
+    with open('data/blog_posts.json', 'w') as file:
+        file.write(json_post)
+
+
+blog_posts = load_post()
 
 
 @app.route('/')
@@ -24,17 +37,20 @@ def add():
         author = request.form.get('author','')
         content = request.form.get('content','')
         blog_posts.append({'id': len(blog_posts)+1, 'author': author, 'title': title, 'content': content})
+        print(blog_posts)
+        save_post(blog_posts)
         return redirect(url_for('index'))
 
     return render_template('add.html')
 
 
-@app.route('/delete/<int:post_id>', methods=['POST'])
+@app.route('/delete/<int:post_id>', methods=['GET'])
 def delete(post_id):
     """Delete post by post id and return index.html"""
     for post in blog_posts:
         if post['id'] == post_id:
             blog_posts.pop(blog_posts.index(post))
+            save_post(blog_posts)
             return redirect(url_for('index'))
 
 
@@ -61,6 +77,7 @@ def update(post_id):
         post['title'] = title
         post['author'] = author
         post['content'] = content
+        save_post(blog_posts)
         return redirect(url_for('index'))
     return render_template('update.html', post=post)
 
