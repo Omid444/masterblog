@@ -5,6 +5,7 @@ app = Flask(__name__)
 
 
 def load_post():
+    """Upload json file, if no such file exist in path or if it is empty it will return empty list"""
     if os.path.exists('data/blog_posts.json'):
         with open('data/blog_posts.json', 'r') as file:
             content = file.read().strip()
@@ -14,6 +15,7 @@ def load_post():
 
 
 def save_post(posts):
+    """Write changes to jason file"""
     json_post = json.dumps(posts, indent=4)
     with open('data/blog_posts.json', 'w') as file:
         file.write(json_post)
@@ -36,10 +38,12 @@ def add():
         title = request.form.get('title','')
         author = request.form.get('author','')
         content = request.form.get('content','')
-        blog_posts.append({'id': len(blog_posts)+1, 'author': author, 'title': title, 'content': content})
-        print(blog_posts)
-        save_post(blog_posts)
-        return redirect(url_for('index'))
+        if all([title, author, content]):
+            blog_posts.append({'id': (max(post['id'] for post in blog_posts) + 1), 'author': author, 'title': title, 'content': content})
+            save_post(blog_posts)
+            return redirect(url_for('index'))
+        else:
+            return "all field must be filled"
 
     return render_template('add.html')
 
@@ -47,6 +51,11 @@ def add():
 @app.route('/delete/<int:post_id>', methods=['GET'])
 def delete(post_id):
     """Delete post by post id and return index.html"""
+    post = fetch_post_by_id(post_id)
+    if post is None:
+        # Post not found
+        return "Post not found", 404
+
     for post in blog_posts:
         if post['id'] == post_id:
             blog_posts.pop(blog_posts.index(post))
@@ -74,11 +83,17 @@ def update(post_id):
         title = request.form.get('title','')
         author = request.form.get('author','')
         content = request.form.get('content','')
-        post['title'] = title
-        post['author'] = author
-        post['content'] = content
-        save_post(blog_posts)
-        return redirect(url_for('index'))
+        print(title, content, author)
+        print(all([title, author, content]))
+        if all([title, author, content]):
+            post['title'] = title
+            post['author'] = author
+            post['content'] = content
+            save_post(blog_posts)
+            return redirect(url_for('index'))
+        else:
+            return "all field must be filled"
+
     return render_template('update.html', post=post)
 
 
